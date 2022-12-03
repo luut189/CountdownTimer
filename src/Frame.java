@@ -1,8 +1,11 @@
-import java.awt.GridBagLayout;
-import java.util.concurrent.TimeUnit;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagLayout;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,14 +18,14 @@ public class Frame extends JFrame {
     private JLabel counter;
     private SwingWorker<Void, Void> worker;
 
+    private LocalDateTime dateTime;
     private long hour;
     private long minute;
     private long second;
 
-    public Frame(long secondsLeft, int width, int height) {
-        hour = TimeUnit.SECONDS.toHours(secondsLeft);
-        minute = TimeUnit.SECONDS.toMinutes(secondsLeft) - hour*60;
-        second = secondsLeft - hour*3600 - minute*60;
+    public Frame(LocalDateTime dateTime, long secondsLeft, int width, int height) {
+        this.dateTime = dateTime;
+        getTime();
         setupCounter();
 
         containter = new JPanel();
@@ -40,28 +43,45 @@ public class Frame extends JFrame {
         setVisible(true);
     }
 
+    public void getTime() {
+        long secondsLeft = Duration.between(LocalDateTime.now(), dateTime).toSeconds();
+        hour = TimeUnit.SECONDS.toHours(secondsLeft);
+        minute = TimeUnit.SECONDS.toMinutes(secondsLeft) - hour*60;
+        second = secondsLeft - hour*3600 - minute*60;
+    }
+
     public void updateTime() {
-        counter.setText(hour + ":" + minute + ":" + second);
+        StringBuilder sb = new StringBuilder();
+
+        if(hour < 10) sb.append("0" + hour + ":");
+        else sb.append(hour + ":");
+
+        if(minute < 10) sb.append("0" + minute + ":");
+        else sb.append(minute + ":");
+
+        if(second < 10) sb.append("0" + second);
+        else sb.append(second);
+
+        counter.setText(sb.toString());
     }
 
     public void setupCounter() {
         worker = new SwingWorker<Void,Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                while(hour != 0 || minute != 0 || second != 0) {
-                    if(second == 0) {
-                        second = 60;
-                        minute--;
-                        if(minute == 0) {
-                            minute = 60;
-                            hour--;
-                        }
-                    }
-                    second--;
+                while(true) {
+                    getTime();
                     updateTime();
-                    Thread.sleep(1000);
+                    if(hour == 0 && minute == 0 && second == 0) break;
                 }
                 return null;
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                counter.setForeground(Color.red);
+                counter.setText("Chet me may roi");
             }
         };
         worker.execute();

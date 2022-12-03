@@ -10,6 +10,6 @@ public class App {
 
         long secondsLeft = Duration.between(LocalDateTime.now(), dateTime).toSeconds();
         
-        new Frame(secondsLeft, 1600, 900);
+        new Frame(dateTime, secondsLeft, 1600, 900);
     }
 }
