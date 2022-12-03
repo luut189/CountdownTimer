@@ -4,13 +4,16 @@ This is a countdown timer
 
 ## How to run
 
-Just download the `.jar` file and **run**.
+**Requirement**: `Java 17`
 
-Probably need to run with **Terminal** though, so here is the commands for that:
+Just download the `.jar` file from [*Releases*](https://github.com/luut189/CountdownTimer/releases/tag/v1.0) and **run**.
+
+You might need to run with **Terminal** though, so here is the commands for that:
 ```
 java -jar CountdownTimer.jar
 ```
-And you probably need `Java 17` to run.
+
+If you want to double-click to run the `.jar` file, you might need to do some [**StackOverflow**](https://stackoverflow.com/) on your own. Good luck!
 
 ## Config
 
